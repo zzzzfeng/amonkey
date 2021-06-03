@@ -405,18 +405,11 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--pkg", type=str, help="single app")
     parser.add_argument("-P", "--plist", type=str, help="multiple apps")
     parser.add_argument("-s", "--did", type=str, help="device ID")
-
-    if sys.version_info < (3, 7):
-        logging.error('Run with python3.7+')
-        sys.exit()
     
     args = parser.parse_args()
     pkg = args.pkg
     plist = args.plist
     did = args.did
-
-    # parseUIDump('dump_2147992889569360909.uix')
-    # sys.exit()
 
     try:
         if pkg:
