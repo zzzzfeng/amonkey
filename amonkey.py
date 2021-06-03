@@ -245,6 +245,7 @@ class AMonkey(object):
     def UIClick(self, p, a):
         if p not in self.getCurActivity():
             return
+        #some phone may not work
         cmd = self._adb + ' shell  "/system/bin/uiautomator dump /sdcard/window_dump.xml "'
         ret = execShell(cmd)
         curdir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '')
