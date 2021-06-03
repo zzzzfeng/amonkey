@@ -255,6 +255,8 @@ class AMonkey(object):
         clicks = parseUIDump(dumpfile)
         
         for c in clicks:
+            if p not in self.getCurActivity():
+                break
             if c.get('class') and c.get('class').startswith('android.widget.EditText'):
                 xy = c.get('bounds')
                 xy = xy.split('][')[0]
@@ -278,7 +280,7 @@ class AMonkey(object):
                 logging.info('click ({},{}) {}'.format(x, y, c.get('resource-id')))
                 cmd = self._adb + ' shell "input tap {} {}"'.format(x, y)
                 ret = execShell(cmd)
-                
+                time.sleep(1)
                 if a not in self.getCurActivity():
                     cmd = self._adb + ' shell "input keyevent 4"'
                     ret = execShell(cmd)
