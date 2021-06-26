@@ -318,7 +318,7 @@ class APKCook:
             #print(ret.strip(','))
             return ret.strip(',')
         else:
-            print ("===暴露组件===(注意调用权限，动态registerReceiver未检测)")
+            print ("===exposed component===(not include dynamic registerReceiver)")
             print ("Package: "+self.get_package())
             print ("VersionName: "+self.androidversion["Name"]+" VersionCode: "+self.androidversion["Code"])
             print ("Min_sdk: "+self.get_min_sdk_version()+" Target_sdk: "+self.get_target_sdk_version())

@@ -395,20 +395,39 @@ class AMonkey(object):
             
             time.sleep(0.2)
 
+def getExposed(pkg):
+    from inter.apkcookpy.lib.apk import APKCook
+    if os.path.isfile(pkg) and '.apk' in pkg:
+        #apk
+        try:
+            APKCook(pkg).show()
+        except Exception as e:
+            logging.error(e)
+    elif os.path.isfile(pkg) and '.xml' in pkg:
+        #text xml
+        try:
+            APKCook(pkg, True, True).show()
+        except:
+            #binary xml
+            try:
+                APKCook(pkg, True).show()
+            except Exception as e:
+                logging.error(e)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Android Monkey', formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog='''
-    python3 amonkey.py -p com.xiaomi.music
-    python3 amonkey.py -P plist.txt
+    python3 amonkey.py -p com.xiaomi.music[,com.xiaomi.youpin]
+    python3 amonkey.py -p plist.txt
     ''')
-    parser.add_argument("-p", "--pkg", type=str, help="single app")
-    parser.add_argument("-P", "--plist", type=str, help="multiple apps")
+    parser.add_argument("-p", "--pkg", type=str, help="app/applist")
+    parser.add_argument("-e", "--exposed", type=str, help="exposed component")
     parser.add_argument("-s", "--did", type=str, help="device ID")
     
     args = parser.parse_args()
     pkg = args.pkg
-    plist = args.plist
+    exposed = args.exposed
     did = args.did
 
     try:
@@ -416,9 +435,8 @@ if __name__ == '__main__':
             amonkey = AMonkey(did)
             amonkey.monkey(pkg)
         
-        elif plist:
-            amonkey = AMonkey(did)
-            amonkey.monkey(plist)
+        elif exposed:
+            getExposed(exposed)
 
         else:
             parser.print_help()
