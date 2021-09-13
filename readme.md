@@ -1,9 +1,12 @@
 # A Monkey
 Android APP autotest tool based on uiautomator, need no root
 
+
 # usage
 - pip install -r requirements.txt
 - python amonkey.py -p com.xiaomi.music
+- Get exposed components from apk
+  - python amonkey.py -e AndroidManifest.xml|pkg.apk
 
 # how does it work?
 - get all exposed component through axml from `androguard`, and start it one by one
