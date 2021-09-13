@@ -253,7 +253,9 @@ class AMonkey(object):
         cmd = self._adb + ' pull /sdcard/window_dump.xml '+dumpfile
         ret = execShell(cmd)
 
-        clicks = parseUIDump(dumpfile)
+        # clicks = parseUIDump(dumpfile)
+
+        clicks = []
         
         for c in clicks:
             if p not in self.getCurActivity():
@@ -390,8 +392,8 @@ class AMonkey(object):
                 traceback.print_exc()
                 logging.error(str(e))
 
-            cmd = self._adb + ' shell "am force-stop '+p+' " '
-            ret = execShell(cmd)
+            # cmd = self._adb + ' shell "am force-stop '+p+' " '
+            # ret = execShell(cmd)
             
             time.sleep(0.2)
 
@@ -414,12 +416,16 @@ def getExposed(pkg):
             except Exception as e:
                 logging.error(e)
 
+    else:
+      logging.error("python3 amonkey.py -e test.xml|test.apk")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Android Monkey', formatter_class=argparse.RawDescriptionHelpFormatter,
     epilog='''
     python3 amonkey.py -p com.xiaomi.music[,com.xiaomi.youpin]
     python3 amonkey.py -p plist.txt
+    python3 amonkey.py -e test.xml|test.apk
     ''')
     parser.add_argument("-p", "--pkg", type=str, help="app/applist")
     parser.add_argument("-e", "--exposed", type=str, help="exposed component")
