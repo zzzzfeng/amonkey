@@ -274,40 +274,40 @@ class APKCook:
                 out.append(name)
                
         return out
-    
-    def get_activities_all(self):
+
+    def get_comp_exposed(self, cname):
         out = []
-        for item in self.xml.getElementsByTagName("activity"):
+        for item in self.xml.getElementsByTagName(cname):
+            exported = item.getAttribute("android:exported")
+            name = ""
+            if exported == "true":
+                name = item.getAttribute("android:name")
+            elif exported != "false":
+                item1 = item.getElementsByTagName("intent-filter")
+                if len(item1) > 0:
+                    name = item.getAttribute("android:name")
+            if name:
+              out.append(name)
+            
+        return out
+
+        
+    
+    def get_comp_all(self, name):
+        out = []
+        for item in self.xml.getElementsByTagName(name):
             name = item.getAttribute("android:name")
             out.append(name)
-
         return out
-    
-    def get_services_all(self):
-        out = []
-        for item in self.xml.getElementsByTagName("service"):
-            name = item.getAttribute("android:name")
-            out.append(name)
-
-        return out
-    
-    def get_receivers_all(self):
-        out = []
-        for item in self.xml.getElementsByTagName("receiver"):
-            name = item.getAttribute("android:name")
-            out.append(name)
-
-        return out
-    
-    
+   
     def show(self, monkey=False):
         import re
         if monkey == 'a':
-            return self.get_activities_all()
+            return self.get_comp_all('activity')
         elif monkey == 's':
-            return self.get_services_all()
+            return self.get_comp_all('service')
         elif monkey == 'r':
-            return self.get_receivers_all()
+            return self.get_comp_all('receiver')
         
         #browsable
         elif monkey == 'b':
@@ -325,28 +325,15 @@ class APKCook:
             #print(self.get_androidversion_name())
             return self.get_androidversion_name()
         if monkey == 'ma':
-            ret = ",".join(self.get_activities())
-            ret = ret.replace(' BROWSABLE', '')
-            ret = ret.replace('!activity-alias!', '')
-            ret = ret.replace('!disabled!', '')
-            ret += ','
-            ret = re.sub('@.*?,', ',', ret)
-            #print(ret.strip(','))
-            return ret.strip(',')
+            ret = ",".join(self.get_comp_exposed('activity'))
+            return ret
         elif monkey == 'ms':
-            ret = ",".join(self.get_services())
-            ret = ret.replace('!disabled!', '')
-            ret += ','
-            ret = re.sub('@.*?,', ',', ret)
-            #print(ret.strip(','))
-            return ret.strip(',')
+            ret = ",".join(self.get_comp_exposed('service'))
+            return ret
+            
         elif monkey == 'mr':
-            ret = ",".join(self.get_receivers())
-            ret = ret.replace('!disabled!', '')
-            ret += ','
-            ret = re.sub('@.*?,', ',', ret)
-            #print(ret.strip(','))
-            return ret.strip(',')
+            ret = ",".join(self.get_comp_exposed('receiver'))
+            return ret
         else:
             print ("===exposed component===(no dynamic registerReceiver)")
             print ("Package: "+self.get_package())
