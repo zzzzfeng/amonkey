@@ -89,10 +89,11 @@ class APKCook:
     def get_target_sdk_version(self):
         return self.get_element("uses-sdk", "android:targetSdkVersion")
 
-    def get_intentfilter(self, item):
-        f2 = {}
+    def get_intentfilter(self, item, provider=False):
+        f3 = []
         for i in item.getElementsByTagName("intent-filter"):
             c = ''
+            f2 = {}
             for ii in i.getElementsByTagName("category"):
                 c += ii.getAttribute("android:name")+','
             c = c.rstrip(',')
@@ -112,7 +113,17 @@ class APKCook:
             c = c.rstrip(',')
             if c:
                 f2["data"] = c
-        return f2
+
+            if provider:
+                c = ''
+                for m in item.getElementsByTagName("meta-data"):
+                    c += m.getAttribute("android:resource")+','
+                c = c.rstrip(',')
+                if c:
+                    f2["filepath"] = c
+            if f2:
+              f3.append(f2)
+        return f3
 
     def checkPermission(self, p):
         for i in self.permission:
@@ -261,14 +272,8 @@ class APKCook:
                 if item.getAttribute("android:writePermission") != "":
                     name += ",write-permission:"+self.checkPermission(item.getAttribute("android:writePermission"))
                 
-                f2 = self.get_intentfilter(item)
-                c = ''
-                for m in item.getElementsByTagName("meta-data"):
-                  c += m.getAttribute("android:resource")+','
-                c = c.rstrip(',')
-                if c:
-                    f2["filepath"] = c
-
+                f2 = self.get_intentfilter(item, True)
+                
                 if f2:
                     name += "\n\t"+json.dumps(f2)
                 out.append(name)
